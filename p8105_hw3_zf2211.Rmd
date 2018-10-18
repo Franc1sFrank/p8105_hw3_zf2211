@@ -25,7 +25,7 @@ brfss = brfss_smart2010 %>%
   mutate(response = as_factor(response, levels = c("Excellent", "Very good", "Good", "Fair", "Poor"), ordered = TRUE))
 ```
 
-In 2002,  
+In 2002, states
 ```{r}
 brfss %>% 
   filter(year == "2002") %>% 
@@ -33,12 +33,24 @@ brfss %>%
   count(locationabbr) %>% 
   filter(n == 7)
 ```
-states were observed at 7 locations.
+were observed at 7 locations.
 
 
 ```{r}
-
+#create a dataset for spaghetti plot
+brfss1 = brfss %>% 
+  group_by(locationabbr, year) %>% 
+  distinct(locationdesc) %>% 
+  count(locationabbr)
 ```
+
+```{r}
+#spaghetti plot
+ggplot(brfss1, aes(x = year, y = n, color = locationabbr)) +
+  geom_line() +
+  geom_point()
+```
+This spaghetti plot shows the number of locations change in each state from 2002 to 2010. As we can see, most states have the similar trend and the change is relatively small, while FL had big fluctuation in 2007 and 2010.
 
 
 #Problem2
