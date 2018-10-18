@@ -4,8 +4,42 @@ author: "Francis"
 date: "10/10/2018"
 output: github_document
 ---
+```{r}
+library(tidyverse)
+```
 
 #Problem 1
-```{r}
 
+```{r}
+#read data
+library(p8105.datasets)
+data(brfss_smart2010, package = "p8105.datasets")
 ```
+
+```{r}
+#tidy up data
+brfss_smart2010 %>% 
+  janitor::clean_names() %>% 
+  filter(topic == "Overall Health") %>% 
+  filter(response %in% c("Excellent", "Very good", "Good", "Fair", "Poor")) %>% 
+  mutate(response = as_factor(response, levels = c("Excellent", "Very good", "Good", "Fair", "Poor"), ordered = TRUE))
+  
+```
+
+
+
+#Problem2
+
+```{r}
+data(instacart, package = "p8105.datasets")
+#read data
+```
+
+
+#Problem3
+
+```{r}
+data(my_noaa, package = "p8105.datasets")
+#read data
+```
+
