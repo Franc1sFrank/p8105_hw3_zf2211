@@ -18,14 +18,27 @@ data(brfss_smart2010, package = "p8105.datasets")
 
 ```{r}
 #tidy up data
-brfss_smart2010 %>% 
+brfss = brfss_smart2010 %>% 
   janitor::clean_names() %>% 
   filter(topic == "Overall Health") %>% 
   filter(response %in% c("Excellent", "Very good", "Good", "Fair", "Poor")) %>% 
   mutate(response = as_factor(response, levels = c("Excellent", "Very good", "Good", "Fair", "Poor"), ordered = TRUE))
-  
 ```
 
+In 2002,  
+```{r}
+brfss %>% 
+  filter(year == "2002") %>% 
+  distinct(locationabbr, locationdesc) %>% 
+  count(locationabbr) %>% 
+  filter(n == 7)
+```
+states were observed at 7 locations.
+
+
+```{r}
+
+```
 
 
 #Problem2
@@ -39,7 +52,7 @@ data(instacart, package = "p8105.datasets")
 #Problem3
 
 ```{r}
-data(my_noaa, package = "p8105.datasets")
+data(ny_noaa, package = "p8105.datasets")
 #read data
 ```
 
