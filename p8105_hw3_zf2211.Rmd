@@ -88,10 +88,13 @@ As we can see, the percent of each response from high to low is "Very good", "Go
 #Problem2
 
 ```{r}
+#read data and print
 data(instacart, package = "p8105.datasets")
-#read data
+print(instacart)
+#summary
+summary(instacart)
 ```
-
+Instacart dataset contains `r nrow(instacart)` observations and `r ncol(instacart)` variables. 
 
 #Problem3
 
