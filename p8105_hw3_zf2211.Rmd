@@ -52,6 +52,38 @@ ggplot(brfss1, aes(x = year, y = n, color = locationabbr)) +
 ```
 This spaghetti plot shows the number of locations change in each state from 2002 to 2010. As we can see, most states have the similar trend and the change is relatively small, while FL had big fluctuation in 2007 and 2010.
 
+```{r}
+#filter data
+brfss %>% 
+  filter(year %in% c("2002", "2006", "2010")) %>% 
+  filter(locationabbr == "NY", response == "Excellent") %>% 
+  group_by(year) %>% 
+  summarize(mean = mean(data_value), 
+            sd = sd(data_value)) %>% 
+#make a table  
+  knitr::kable(digits = 1)
+```
+
+From the table, the mean of NY "Excellent" response decreased from 24.0%(2002) to 22.5%(2006) and keeps similar to 22.7%(2010). The SD of NY "Excellent" response decreased from 4.5%(2002) to 4.0%(2006) to 3.6%(2010).
+
+```{r}
+#filter data
+brfss_avg = brfss %>% 
+  group_by(year, locationabbr, response) %>% 
+  summarize(avg_prop = mean(data_value))
+#plot histogram
+ggplot(brfss_avg, aes(x = year, y = avg_prop, color = locationabbr)) +
+  geom_line() +
+  labs(x = "Year",
+       y = "Average percentage of each response",
+       title = "The state-level average percent of each response from 2002 to 2010") +
+  facet_grid(. ~ response) + #seperate into 5 groups
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 45, hjust = 0.8)) +
+  guides(colour = guide_legend(nrow = 3)) #row of legend
+```
+As we can see, the percent of each response from high to low is "Very good", "Good", "Excellent", "Fair" and "Poor". But we could check this conclusion later if have spare time.
+
 
 #Problem2
 
