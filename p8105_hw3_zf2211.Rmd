@@ -94,12 +94,100 @@ print(instacart)
 #summary
 summary(instacart)
 ```
-Instacart dataset contains `r nrow(instacart)` observations and `r ncol(instacart)` variables. 
+Instacart dataset contains `r nrow(instacart)` observations and `r ncol(instacart)` variables, showing numeric variables like order ID, order hours; and character value like product name and department. 
+For example, the order_id = 1 which ordered by user_id = 112108, have 8 product which add_to_cart_order is product_id 49302, 11109, 10246, 49683, 43633, 13176, 47209, 22035. Among them, add_to_cart_order 1,2,5,8 are reordered. instacart$user_id = 112108 ordered 4 each product on Thursday at 10 p.m. after 9 days of last order. The aisle_id, aisle, department_id, department of each product are shown too.
+
+There are 
+```{r}
+instacart %>% 
+  distinct(aisle) %>% 
+  nrow()
+```
+aisles.
+
+```{r}
+# number of items from each aisle
+aisle_num <- 
+instacart %>% 
+  group_by(aisle) %>% 
+  count() %>% 
+  arrange(desc(n))
+aisle_num
+```
+`fresh vegetables` and `fresh fruits` are the aisle where most item ordered from.
+
+```{r}
+#plot aisle
+plot_aisle <- function(left, right){
+  ggplot(filter(aisle_num, n >= left & n < right), aes(x = reorder(aisle, -n), y = n)) +
+  geom_bar(stat = "identity") + 
+  geom_text(aes(label = n), size = 2, position = position_dodge(width = 0.9), vjust = -0.25) +
+  scale_y_continuous(name = "Number of items ordered") +
+  scale_x_discrete(name = "Asile" ) +
+  coord_cartesian(ylim = c(left * 0.95, right * 1.05)) +
+  labs(title = paste("Aisles from which more than", left, "and less than", right, "items ordered")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+       axis.title = element_text(size = 10, face = "bold")
+)
+}
+plot1 = plot_aisle (0, 1000)
+plot2 = plot_aisle (1000, 2000)
+plot3 = plot_aisle (2000, 6000)
+plot4 = plot_aisle (6000, 13000)
+plot5 = plot_aisle (13000, 151000)
+plot5  
+plot4  
+plot3  
+plot2 
+plot1 
+```
+I divided the 134 aisles into 5 groups(0-1000, 1000-2000, 2000-6000, 6000-13000, 13000-151000), and plot each group a barchart in a descending way. Fresh vegetables and fresh fruits are outstanding high while other aisles are in a relatively smoothly descending way.
+
+The most popular items in each aisle is:
+```{r}
+# make a table showing the most popular item in aisles "baking ingredients", "dog food care", "packaged vegetables fruits"
+instacart %>% 
+  filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) %>% 
+  group_by(aisle) %>% 
+  count(product_name) %>% 
+  mutate(item_ranking = min_rank(desc(n))) %>% 
+  filter(item_ranking == 1) %>% 
+  select(-item_ranking) %>% 
+  knitr::kable()
+```
+"Light Brown Sugar", "Snack Sticks Chicken & Rice Recipe Dog Treats", and "Organic Baby Spinach" respectively.
+
+Since aisle "package vegetables fruits" is much bigger than "dog food care", there are a lot more "Organic Baby Spinach" order than "Snack Stick Chichen & Rice Recipe Dog Treats" order in each aisle correspondingly.
+
+
+```{r}
+# filter product_name and make adjustments to date/time variables accordingly.
+instacart %>% 
+  filter(product_name %in%  c("Pink Lady Apples","Coffee Ice Cream")) %>% 
+  group_by(product_name, order_dow) %>% 
+  summarize(mean_hr = mean(order_hour_of_day)) %>% 
+  mutate(mean_hr = paste(floor(mean_hr), round((mean_hr - floor(mean_hr)) * 60), sep=":")) %>% 
+  spread(key = order_dow, value = mean_hr) %>% 
+  rename('Sun' = '0', 'Mon'= '1', 'Tue' = '2', 'Wed' = '3', 'Thu' = '4', 'Fri' = '5', 'Sat' = '6') %>%
+  knitr::kable() 
+```
+The table lists the average hour of day when Pink Lady Apples and Coffee Ice Cream are ordered. We can say the two items are almost ordered evenly in the day, because the mean of the time are between 11:30 and 15:00. The Coffee Ice Cream is ordered more in the afternoon since its mean time is later than Pink Lady Apples.
+
 
 #Problem3
 
 ```{r}
-data(ny_noaa, package = "p8105.datasets")
 #read data
+data(ny_noaa, package = "p8105.datasets")
+ny_noaa
+```
+The `ny_noaa` dataset contains `r nrow(ny_noaa)` records and `r ncol(ny_noaa)` variables relevant to 'national-wise daily weather data. The records are reported from `r nrow(distinct(ny_noaa,id))` distinct stations, from `r range(ny_noaa$date)[1]` to `r range(ny_noaa$date)[2]`. Precipitation (in tenths of mm), snowfall (in mm), snow depth (in mm) and maximun / minimum temperature (in tenths of degree C) are the variables included in this dataset.   
+Out of the total `r dim(ny_noaa)[1]` records, there are `r round(sum(is.na(ny_noaa$tmax_dC)) / nrow(ny_noaa)*100)` % missing values in the variable `tmax_dC` and `tmin_dC`; `r round(sum(is.na(ny_noaa$snow)) / nrow(ny_noaa)*100)`% in `snow_mm`; `r round(sum(is.na(ny_noaa$snwd)) / nrow(ny_noaa)*100)`% in `snwd_mm`.   
+The relatively large proportion of missing values may reduce reliability of statistics generated based on this dataset. Limited number of observations on tmax/tmin during earlier years, due to the large quantity of their missing values, may render the samples in this dataset being less representative of the overall weather pattern in NY. 
+  
+
+```{r}
+#summarize data
+summarize(ny_noaa)
 ```
 
