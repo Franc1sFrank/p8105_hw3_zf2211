@@ -300,7 +300,7 @@ density <-
 grid.arrange(hex, density, nrow = 2)
 ```
 
-From the plot above, the Max and Min temperatures seems have positive-relationship. And the Max temperature has a dense center around 0-25ºC and Min temperature around -5-20ºC.
+From the plot above, the Max and Min temperatures seems have positive-relationship. And the Max temperature has a dense center around 0-25ºC and Min temperature around -5-20ºC. There are several outliers around, which shows the imbalance of tmax and tmin(extremely high or low) in those years.
   
-From the plot below, during these years, the yearly snowfall distribution is similar, have 3 dense ranges around 0-30mm, 45-55m and 75mm.
+From the plot below, during these years, the yearly snowfall distribution is similar, have 3 dense ranges around 0-30mm, 45-55m and 75mm. From the plot no evident outliers found.
 
